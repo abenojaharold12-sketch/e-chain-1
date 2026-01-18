@@ -1,10 +1,79 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>My First Website</title>
+  <meta charset="UTF-8">
+  <title>E-Chain | Smart QR Keychain</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Hello World!</h1>
-  <p>This is my website made with GitHub Pages.</p>
+
+  <!-- NAVBAR -->
+  <header class="navbar">
+    <h1 class="logo">E-Chain</h1>
+    <nav>
+      <a href="#about">About</a>
+      <a href="#features">Features</a>
+      <a href="#ai">AI</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <h2>Scan. Play. Ask.</h2>
+    <p>A smart keychain with a QR that connects you to games and an AI assistant.</p>
+    <a href="#ai" class="btn">Try the AI</a>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="section">
+    <h2>What is E-Chain?</h2>
+    <p>
+      E-Chain is a student-made smart keychain that uses a QR code to give access
+      to games, information, and a simple AI assistant — all in one place.
+    </p>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features" class="section light">
+    <h2>Features</h2>
+    <div class="features">
+      <div class="card">🎮 Mini Games</div>
+      <div class="card">🤖 Built-in AI</div>
+      <div class="card">📱 QR Access</div>
+      <div class="card">🎒 Student Price</div>
+    </div>
+  </section>
+
+  <!-- AI CHATBOT -->
+  <section id="ai" class="section">
+    <h2>E-Chain AI 🤖</h2>
+    <p>Ask general questions anytime</p>
+
+    <div class="chatbox">
+      <div id="chat-log" class="chat-log">
+        <div class="bot">🤖 Hi! Ask me anything.</div>
+      </div>
+
+      <div class="chat-input">
+        <input type="text" id="user-input" placeholder="Type your question..." />
+        <button onclick="sendMessage()">Send</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="section light">
+    <h2>Contact</h2>
+    <p>Available at Calinan National High School</p>
+    <p>Email: echain.project@gmail.com</p>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <p>© 2026 E-Chain | Student Project</p>
+  </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>
