@@ -11,7 +11,7 @@ async function sendMessage() {
   chatLog.scrollTop = chatLog.scrollHeight;
 
   try {
-    const response = await fetch("https://https://https://https://https://e-chain-1.vercel.app/api/ask", {
+    const response = await fetch("https://e-chain-1.vercel.app/api/ask", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ question: message })
