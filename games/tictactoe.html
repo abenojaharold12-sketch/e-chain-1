@@ -12,12 +12,11 @@
       justify-content: center;
       margin-bottom: 15px;
     }
-    .board button {
-      font-size: 24px;
-      height: 80px;
-    }
-    #status {
-      font-weight: bold;
+    .board button { font-size: 24px; height: 80px; width: 80px; }
+
+    @media (max-width: 480px) {
+      .board { grid-template-columns: repeat(3, 60px); gap: 4px; }
+      .board button { height: 60px; width: 60px; font-size: 18px; }
     }
   </style>
 </head>
@@ -36,43 +35,43 @@ let currentPlayer = "X";
 function drawBoard() {
   const boardDiv = document.getElementById("board");
   boardDiv.innerHTML = "";
-  board.forEach((cell, i) => {
-    const btn = document.createElement("button");
-    btn.textContent = cell;
-    btn.onclick = () => makeMove(i);
+  board.forEach((cell,i)=>{
+    const btn=document.createElement("button");
+    btn.textContent=cell;
+    btn.onclick=()=>makeMove(i);
     boardDiv.appendChild(btn);
   });
   checkWinner();
 }
 
-function makeMove(i) {
-  if (board[i] !== "") return;
-  board[i] = currentPlayer;
-  currentPlayer = currentPlayer === "X" ? "O" : "X";
+function makeMove(i){
+  if(board[i]!=="") return;
+  board[i]=currentPlayer;
+  currentPlayer=currentPlayer==="X"?"O":"X";
   drawBoard();
 }
 
-function checkWinner() {
-  const winPatterns = [
-    [0,1,2],[3,4,5],[6,7,8], // rows
-    [0,3,6],[1,4,7],[2,5,8], // columns
-    [0,4,8],[2,4,6]          // diagonals
+function checkWinner(){
+  const winPatterns=[
+    [0,1,2],[3,4,5],[6,7,8],
+    [0,3,6],[1,4,7],[2,5,8],
+    [0,4,8],[2,4,6]
   ];
-  let winner = null;
-  winPatterns.forEach(p => {
-    if (board[p[0]] && board[p[0]] === board[p[1]] && board[p[1]] === board[p[2]]) {
-      winner = board[p[0]];
+  let winner=null;
+  winPatterns.forEach(p=>{
+    if(board[p[0]] && board[p[0]]===board[p[1]] && board[p[1]]===board[p[2]]){
+      winner=board[p[0]];
     }
   });
-  const status = document.getElementById("status");
-  if (winner) status.textContent = `🎉 Player ${winner} wins!`;
-  else if (!board.includes("")) status.textContent = "⚖️ It's a draw!";
-  else status.textContent = `Current Player: ${currentPlayer}`;
+  const status=document.getElementById("status");
+  if(winner) status.textContent=`🎉 Player ${winner} wins!`;
+  else if(!board.includes("")) status.textContent="⚖️ It's a draw!";
+  else status.textContent=`Current Player: ${currentPlayer}`;
 }
 
-function resetBoard() {
-  board = Array(9).fill("");
-  currentPlayer = "X";
+function resetBoard(){
+  board=Array(9).fill("");
+  currentPlayer="X";
   drawBoard();
 }
 
@@ -81,4 +80,3 @@ drawBoard();
 
 </body>
 </html>
-
