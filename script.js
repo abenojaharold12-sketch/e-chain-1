@@ -27,3 +27,63 @@ async function sendMessage() {
     chatLog.innerHTML += `<div class="bot">🤖 Sorry, something went wrong. Try again later.</div>`;
   }
 }
+/* =========================
+   MINI GAMES LOGIC
+========================= */
+
+// Show selected game
+function showGame(gameId) {
+  document.querySelectorAll(".game").forEach(g => g.style.display = "none");
+  document.getElementById(gameId).style.display = "block";
+}
+
+/* 🎯 NUMBER GUESSING GAME */
+let secretNumber = Math.floor(Math.random() * 10) + 1;
+
+function checkGuess() {
+  const guess = Number(document.getElementById("guessInput").value);
+  const result = document.getElementById("guessResult");
+
+  if (guess === secretNumber) {
+    result.textContent = "🎉 Correct! New number generated.";
+    secretNumber = Math.floor(Math.random() * 10) + 1;
+  } else {
+    result.textContent = "❌ Try again!";
+  }
+}
+
+/* ❌⭕ TIC TAC TOE */
+let board = Array(9).fill("");
+let currentPlayer = "X";
+
+const boardDiv = document.getElementById("board");
+boardDiv.style.display = "grid";
+boardDiv.style.gridTemplateColumns = "repeat(3, 60px)";
+boardDiv.style.gap = "5px";
+
+function drawBoard() {
+  boardDiv.innerHTML = "";
+  board.forEach((cell, i) => {
+    const btn = document.createElement("button");
+    btn.textContent = cell;
+    btn.style.height = "60px";
+    btn.style.fontSize = "20px";
+    btn.onclick = () => makeMove(i);
+    boardDiv.appendChild(btn);
+  });
+}
+
+function makeMove(i) {
+  if (board[i]) return;
+  board[i] = currentPlayer;
+  currentPlayer = currentPlayer === "X" ? "O" : "X";
+  drawBoard();
+}
+
+function resetTTT() {
+  board = Array(9).fill("");
+  currentPlayer = "X";
+  drawBoard();
+}
+
+drawBoard();
