@@ -42,39 +42,57 @@
     max-width: 240px;
   }
 
-  .controls {
+  .controls-container {
     display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 10px;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 240px;
+    margin-top: 15px;
   }
 
-  .controls button {
-    flex: 1 1 45%;
-    padding: 12px 0;
-    font-size: 18px;
+  .dpad {
+    display: grid;
+    grid-template-columns: 50px 50px 50px;
+    grid-template-rows: 50px 50px 50px;
+    gap: 5px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .dpad button, .rotate-btn {
+    padding: 0;
+    font-size: 22px;
     border: none;
     border-radius: 8px;
     background: #00e6ff;
     color: #111;
     font-weight: bold;
     cursor: pointer;
-    user-select: none; /* prevents text selection / copy menu */
-    touch-action: manipulation; /* fixes mobile long press */
+    user-select: none;
+    touch-action: manipulation;
     transition: transform 0.1s, background 0.2s;
   }
 
-  .controls button:active {
+  .dpad button:active, .rotate-btn:active {
     background: #00b0cc;
     transform: scale(0.95);
   }
 
+  /* D-pad positions */
+  .dpad .up { grid-column: 2; grid-row: 1; }
+  .dpad .left { grid-column: 1; grid-row: 2; }
+  .dpad .down { grid-column: 2; grid-row: 2; }
+  .dpad .right { grid-column: 3; grid-row: 2; }
+
+  .rotate-btn {
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+    border-radius: 50%;
+  }
+
   @media (max-width:480px){
-    .controls button {
-      font-size: 20px;
-      padding: 15px 0;
-    }
+    .dpad button, .rotate-btn { width: 60px; height: 60px; font-size: 26px; }
     h1 { font-size: 24px; }
   }
 </style>
@@ -90,11 +108,17 @@
   <div>High Score: <span id="highScore">0</span></div>
 </div>
 
-<div class="controls">
-  <button onclick="playerMove(-1)">⬅️</button>
-  <button onclick="playerDrop()">⬇️</button>
-  <button onclick="playerMove(1)">➡️</button>
-  <button onclick="playerRotate()">🔄</button>
+<div class="controls-container">
+  <!-- D-Pad -->
+  <div class="dpad">
+    <button class="up" onclick="playerRotate()">🔄</button>
+    <button class="left" onclick="playerMove(-1)">⬅️</button>
+    <button class="down" onclick="playerDrop()">⬇️</button>
+    <button class="right" onclick="playerMove(1)">➡️</button>
+  </div>
+
+  <!-- Extra Rotate button on the right -->
+  <button class="rotate-btn" onclick="playerRotate()">🔃</button>
 </div>
 
 <script>
@@ -158,18 +182,19 @@ function merge(arena,player){
   });
 }
 
-function rotate(matrix,dir){
-  for(let y=0;y<matrix.length;y++){
-    for(let x=0;x<y;x++){
-      [matrix[x][y],matrix[y][x]]=[matrix[y][x],matrix[x][y]];
-    }
-  }
-  if(dir>0) matrix.forEach(row=>row.reverse());
-  else matrix.reverse();
+function rotate(matrix){
+  const N = matrix.length;
+  const rotated = matrix.map((row,y) =>
+    row.map((val,x) => matrix[N-1-x][y])
+  );
+  return rotated;
 }
 
-function playerRotate(){rotate(player.matrix,1);
-  if(collide(arena,player)) rotate(player.matrix,-1);
+function playerRotate(){
+  const rotated = rotate(player.matrix);
+  if(!collide(arena,{pos:player.pos,matrix:rotated})){
+    player.matrix = rotated;
+  }
 }
 
 function playerMove(dir){
