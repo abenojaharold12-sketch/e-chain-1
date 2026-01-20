@@ -4,8 +4,12 @@
   <meta charset="UTF-8">
   <title>Guess the Number</title>
   <style>
-    body { font-family: Arial; text-align: center; padding: 40px; }
-    input, button { padding: 10px; margin: 5px; }
+    body { font-family: Arial; text-align: center; padding: 20px; }
+    input, button { padding: 12px; margin: 5px; font-size: 16px; }
+
+    @media (max-width: 480px) {
+      input, button { width: 80%; font-size: 18px; }
+    }
   </style>
 </head>
 <body>
@@ -35,4 +39,3 @@
 
 </body>
 </html>
-
