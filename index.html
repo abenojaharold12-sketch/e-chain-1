@@ -13,6 +13,7 @@
     <nav>
       <a href="#about">About</a>
       <a href="#features">Features</a>
+      <a href="#games">Games</a>
       <a href="#ai">AI</a>
       <a href="#contact">Contact</a>
     </nav>
@@ -46,48 +47,45 @@
   </section>
 
   <!-- MINI GAMES -->
-<section id="games" class="section light">
-  <h2>Mini Games 🎮</h2>
-  <p>Click any game below to play directly in your browser!</p>
-  <div class="games-container">
-    <div class="game-card">
-      <h3>Snake Game</h3>
-      <a href="games/snake.html" target="_blank" class="btn">Play</a>
+  <section id="games" class="section light">
+    <h2>Mini Games 🎮</h2>
+    <p>Click any game below to play directly in your browser!</p>
+    <div class="games-container">
+      <div class="game-card">
+        <h3>Snake</h3>
+        <a href="games/snake.html" target="_blank" class="btn">Play</a>
+      </div>
+      <div class="game-card">
+        <h3>Guess the Number</h3>
+        <a href="games/guess.html" target="_blank" class="btn">Play</a>
+      </div>
+      <div class="game-card">
+        <h3>Tic-Tac-Toe</h3>
+        <a href="games/tictactoe.html" target="_blank" class="btn">Play</a>
+      </div>
+      <div class="game-card">
+        <h3>Tetris</h3>
+        <a href="games/tetris.html" target="_blank" class="btn">Play</a>
+      </div>
     </div>
-    <div class="game-card">
-      <h3>Guess the Number</h3>
-      <a href="games/guess.html" target="_blank" class="btn">Play</a>
-    </div>
-    <div class="game-card">
-      <h3>Tic-Tac-Toe</h3>
-      <a href="games/tictactoe.html" target="_blank" class="btn">Play</a>
-    <div class="game-card">
-  <h3>Tetris</h3>
-  <a href="games/tetris.html" target="_blank" class="btn">Play</a>
-</div>
-
-</section>
+  </section>
 
   <!-- AI CHATBOT -->
-<section id="ai" class="section">
-  <h2>E-Chain AI 🤖</h2>
-  <p>Ask general questions, math problems, or anything about E-Chain!</p>
+  <section id="ai" class="section">
+    <h2>E-Chain AI 🤖</h2>
+    <p>Ask general questions, math problems, or anything about E-Chain!</p>
 
-  <div class="chatbox">
-    <div id="chat-log" class="chat-log">
-      <div class="bot">🤖 Hi! Ask me anything.</div>
+    <div class="chatbox">
+      <div id="chat-log" class="chat-log">
+        <div class="bot">🤖 Hi! Ask me anything.</div>
+      </div>
+      <div class="chat-input">
+        <input type="text" id="user-input" placeholder="Type your question..." />
+        <button onclick="sendMessage()">Send</button>
+      </div>
     </div>
+  </section>
 
-    <div class="chat-input">
-      <input type="text" id="user-input" placeholder="Type your question..." />
-      <button onclick="sendMessage()">Send</button>
-    </div>
-</div>
-
-</section>
-
-
-  
   <!-- CONTACT -->
   <section id="contact" class="section light">
     <h2>Contact</h2>
@@ -100,6 +98,7 @@
     <p>© 2026 E-Chain | Student Project</p>
   </footer>
 
+  <!-- SCRIPT -->
   <script src="script.js"></script>
 </body>
 </html>
