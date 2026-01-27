@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 
 export default async function handler(req, res) {
-  // Only allow POST
+  // Only allow POST requests
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
@@ -11,13 +11,15 @@ export default async function handler(req, res) {
       apiKey: process.env.OPENAI_API_KEY,
     });
 
-    // Safety: ensure body exists
+    // Get question safely
     const question = req.body?.question;
     if (!question) {
-      return res.status(400).json({ answer: "Please ask a question." });
+      return res.status(400).json({
+        answer: "Please ask a question.",
+      });
     }
 
-    // Call OpenAI Responses API (latest method)
+    // Call OpenAI Responses API
     const response = await openai.responses.create({
       model: "gpt-4o-mini",
       input: [
@@ -32,11 +34,24 @@ export default async function handler(req, res) {
       ],
     });
 
-    // Send the AI's answer
-    res.status(200).json({ answer: response.output_text });
+    // Send back AI response
+    return res.status(200).json({
+      answer: response.output_text,
+    });
 
   } catch (error) {
     console.error("AI API error:", error);
-    res.status(500).json({ answer: "Server error. Check Vercel logs." });
+
+    // 🔔 Quota / rate limit error (your current issue)
+    if (error?.code === "insufficient_quota" || error?.status === 429) {
+      return res.status(200).json({
+        answer: "⚠️ AI is temporarily unavailable due to usage limits. Please try again later.",
+      });
+    }
+
+    // 🔔 Any other error
+    return res.status(500).json({
+      answer: "⚠️ AI service error. Please try again later.",
+    });
   }
 }
