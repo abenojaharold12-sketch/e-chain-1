@@ -6,47 +6,49 @@
 <title>Frogger | E-Chain Edition</title>
 <style>
   body {
-    font-family: Arial, sans-serif;
     margin: 0;
+    font-family: Arial, sans-serif;
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #cce6ff;
-    position: relative;
+    background: linear-gradient(to bottom, #87CEEB 0%, #cce6ff 100%);
   }
+
   canvas {
     border: 2px solid #333;
-    background-color: #87CEFA;
-    display: block;
+    border-radius: 12px;
     margin-top: 60px;
+    background-color: #87CEFA;
   }
+
   #score {
     font-size: 20px;
     font-weight: bold;
     margin-top: 10px;
   }
+
   button.restart {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     font-size: 20px;
-    padding: 10px 20px;
-    border-radius: 8px;
+    padding: 12px 24px;
+    border-radius: 12px;
     border: none;
     cursor: pointer;
     background-color: #ff4d4d;
     color: white;
   }
 
-  /* Mobile controls at bottom */
+  /* Mobile controls centered at bottom */
   .controls {
     position: fixed;
+    bottom: 20px;
     width: 100%;
-    bottom: 10px;
-    left: 0;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 100px;
     pointer-events: none;
   }
   .controls .left-right, .controls .up-down {
@@ -58,12 +60,12 @@
     flex-direction: column;
   }
   .controls button {
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
-    font-size: 20px;
+    font-size: 24px;
     border: none;
-    background-color: rgba(76, 175, 80, 0.8);
+    background-color: rgba(76, 175, 80, 0.85);
     color: white;
     cursor: pointer;
     transition: opacity 0.2s;
@@ -72,7 +74,7 @@
     opacity: 1;
   }
 
-  /* Visual indicators */
+  /* Visual indicators top corners */
   .legend {
     position: fixed;
     top: 10px;
@@ -81,6 +83,7 @@
     justify-content: space-between;
     padding: 0 20px;
     font-size: 14px;
+    font-weight: bold;
   }
   .legend span {
     display: inline-block;
@@ -94,6 +97,7 @@
 <body>
 
 <h1>Frogger | E-Chain Edition</h1>
+
 <div class="legend">
   <div>
     <span style="background-color: green;"></span> Player
@@ -108,7 +112,7 @@
 <canvas id="gameCanvas" width="400" height="500"></canvas>
 <div id="score">Score: 0</div>
 
-<!-- Mobile controls -->
+<!-- Mobile controls centered at bottom -->
 <div class="controls">
   <div class="left-right">
     <button onclick="mobileMove('left')">◀</button>
@@ -131,7 +135,7 @@ let score = 0;
 let gameOver = false;
 let speedMultiplier = 1;
 
-// Initialize lanes (some road, water, grass)
+// Initialize lanes (road, water, grass)
 function initLanes() {
   lanes = [];
   for (let i = 0; i < 10; i++) {
@@ -180,17 +184,15 @@ function draw() {
   lanes.forEach((lane, idx) => {
     if (lane.type === "water") ctx.fillStyle = "#87CEFA";
     else if (lane.type === "road") ctx.fillStyle = "#ccc";
-    else ctx.fillStyle = "#90EE90"; // grass
+    else ctx.fillStyle = "#90EE90";
     ctx.fillRect(0, idx * laneHeight, canvas.width, laneHeight);
 
-    // Draw objects
     lane.objects.forEach(obj => {
       ctx.fillStyle = obj.color;
       ctx.fillRect(obj.x, obj.y, obj.width, obj.height);
     });
   });
 
-  // Draw player
   ctx.fillStyle = player.color;
   ctx.fillRect(player.x, player.y, player.width, player.height);
 
@@ -238,7 +240,7 @@ function checkCollision() {
           player.y + player.height > log.y &&
           player.y < log.y + log.height) {
         onLog = true;
-        player.x -= log.speed; // move with log
+        player.x -= log.speed;
       }
     });
     if (!onLog) {
@@ -247,12 +249,11 @@ function checkCollision() {
     }
   }
 
-  // Check win / progress
   if (player.y < laneHeight) {
     score += 10;
     moveScreen();
     player.y = canvas.height - player.height - laneHeight;
-    speedMultiplier += 0.1; // increase difficulty
+    speedMultiplier += 0.1;
     spawnObjects();
   }
 }
@@ -260,7 +261,7 @@ function checkCollision() {
 function moveScreen() {
   lanes.forEach(lane => {
     lane.objects.forEach(obj => {
-      obj.y += laneHeight / 2; // move everything down
+      obj.y += laneHeight / 2;
     });
   });
 }
@@ -318,7 +319,7 @@ function gameLoop() {
   }
 }
 
-// Start game
+// Start
 initLanes();
 gameLoop();
 </script>
