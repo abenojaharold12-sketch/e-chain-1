@@ -4,14 +4,104 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>E-Chain | Smart QR Keychain</title>
-  <link rel="stylesheet" href="style.css">
   <style>
-    /* Inline minimal styles for neat AI buttons */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0 10px;
+      background: #f0f4f8;
+      text-align: center;
+    }
+    header.navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      background: #4CAF50;
+      color: white;
+    }
+    header.navbar nav a {
+      color: white;
+      margin-left: 15px;
+      text-decoration: none;
+    }
+    .section {
+      padding: 30px 10px;
+    }
+    .section.light {
+      background: #eaf2f8;
+    }
+    .hero {
+      padding: 50px 10px 30px;
+      background: #70c5ce;
+      color: white;
+    }
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      margin: 10px 0;
+      background: #ff6f61;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .features {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      flex: 1 1 120px;
+      max-width: 150px;
+      font-size: 1.1rem;
+    }
+    .games-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+    }
+    .game-card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      width: 140px;
+    }
+    /* AI Chatbot styles */
+    .chatbox {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    .chat-log {
+      max-height: 250px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 8px;
+      background: #f9f9f9;
+      margin-bottom: 10px;
+      text-align: left;
+    }
+    .user {
+      text-align: right;
+      margin: 4px 0;
+      font-weight: bold;
+    }
+    .bot {
+      text-align: left;
+      margin: 4px 0;
+    }
     .chat-questions {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
       margin-top: 10px;
+      justify-content: center;
     }
     .chat-questions button {
       background-color: #4CAF50;
@@ -26,23 +116,19 @@
     .chat-questions button:hover {
       background-color: #45a049;
     }
-    .chat-log {
-      max-height: 250px;
-      overflow-y: auto;
-      border: 1px solid #ccc;
-      padding: 10px;
-      border-radius: 8px;
-      background: #f9f9f9;
-      margin-bottom: 10px;
-    }
-    .user {
-      text-align: right;
-      margin: 4px 0;
+    /* Timer */
+    #update-timer {
       font-weight: bold;
+      color: #ff6f61;
+      margin-top: 10px;
+      display: block;
+      font-size: 1.1rem;
     }
-    .bot {
-      text-align: left;
-      margin: 4px 0;
+    footer.footer {
+      padding: 20px;
+      background: #4CAF50;
+      color: white;
+      margin-top: 30px;
     }
   </style>
 </head>
@@ -130,6 +216,9 @@
         <button onclick="answerQuestion('How do I scan the QR?')">How do I scan the QR?</button>
         <button onclick="answerQuestion('Does this still update?')">Does this still update?</button>
       </div>
+
+      <!-- Countdown Timer -->
+      <p>Next Update In: <span id="update-timer">Loading...</span></p>
     </div>
   </section>
 
@@ -146,6 +235,47 @@
   </footer>
 
   <!-- SCRIPT -->
-  <script src="script.js"></script>
+  <script>
+    // Offline AI responses
+    function answerQuestion(q) {
+      const chatLog = document.getElementById("chat-log");
+      let answer = "Sorry, I don't understand that question.";
+
+      if(q === "What is E-Chain?") answer = "E-Chain is a smart QR keychain for students that gives access to games and AI assistance.";
+      if(q === "How much does E-Chain cost?") answer = "E-Chain is priced affordably for students, usually around PHP 100-150.";
+      if(q === "Who made you?") answer = "E-Chain AI was made by the student development team at Calinan National High School.";
+      if(q === "What games are there?") answer = "We have Flappy, Frogger, Tic-Tac-Toe, and Tetris.";
+      if(q === "How do I scan the QR?") answer = "Use any QR scanner app on your phone and scan the code on the keychain.";
+      if(q === "Does this still update?") answer = "Yes! We plan regular updates for new features and games.";
+
+      chatLog.innerHTML += `<div class="user">You: ${q}</div>`;
+      chatLog.innerHTML += `<div class="bot">🤖 ${answer}</div>`;
+      chatLog.scrollTop = chatLog.scrollHeight;
+    }
+
+    // Countdown Timer
+    const nextUpdate = new Date("2026-02-01T12:00:00"); // next update date & time
+    function updateCountdown() {
+      const now = new Date();
+      const diff = nextUpdate - now;
+
+      if(diff <= 0) {
+        document.getElementById("update-timer").textContent = "The update is live!";
+        clearInterval(timerInterval);
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      document.getElementById("update-timer").textContent =
+        `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    }
+    const timerInterval = setInterval(updateCountdown, 1000);
+    updateCountdown();
+  </script>
+
 </body>
 </html>
