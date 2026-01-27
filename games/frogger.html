@@ -12,6 +12,7 @@
       align-items: center;
       background-color: #cce6ff;
       margin: 0;
+      position: relative;
     }
     canvas {
       border: 2px solid #333;
@@ -47,6 +48,41 @@
       margin-right: 5px;
       vertical-align: middle;
     }
+
+    /* Mobile control buttons */
+    .controls {
+      position: fixed;
+      width: 100%;
+      bottom: 20px;
+      left: 0;
+      display: flex;
+      justify-content: space-between;
+      pointer-events: none; /* allow canvas to still capture clicks if needed */
+    }
+    .controls .left-right, .controls .up-down {
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+      pointer-events: auto; /* enable clicking buttons */
+    }
+    .controls .up-down {
+      flex-direction: column;
+    }
+    .controls button {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      font-size: 24px;
+      border: none;
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+    .controls button:hover {
+      opacity: 1;
+    }
   </style>
 </head>
 <body>
@@ -60,6 +96,18 @@
     <span style="background-color: red;"></span> Car
     <span style="background-color: brown;"></span> Log
     <span style="background-color: #87CEFA; border:1px solid #333;"></span> Water
+  </div>
+
+  <!-- Mobile controls -->
+  <div class="controls">
+    <div class="left-right">
+      <button onclick="mobileMove('left')">◀</button>
+      <button onclick="mobileMove('right')">▶</button>
+    </div>
+    <div class="up-down">
+      <button onclick="mobileMove('up')">▲</button>
+      <button onclick="mobileMove('down')">▼</button>
+    </div>
   </div>
 
   <script>
@@ -79,14 +127,12 @@
       logs = [];
 
       for (let i = 1; i <= 3; i++) {
-        // Cars
         const speed = 2 + i * 0.5;
         const car = { x: Math.random() * canvas.width, y: i * laneHeight, width: 40, height: 40, color: "red", speed };
         cars.push(car);
       }
 
       for (let i = 1; i <= 2; i++) {
-        // Logs
         const logSpeed = 1 + i;
         const log = { x: Math.random() * canvas.width, y: (i+3) * laneHeight, width: 80, height: 40, color: "brown", speed: logSpeed };
         logs.push(log);
@@ -96,15 +142,11 @@
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Draw water/lane lines
+      // Draw lanes
       for (let i = 0; i <= 10; i++) {
-        if (i >= 4 && i <= 6) {
-          ctx.fillStyle = "#87CEFA"; // water
-        } else if (i >= 1 && i <=3) {
-          ctx.fillStyle = "#ccc"; // road
-        } else {
-          ctx.fillStyle = "#90EE90"; // safe grass
-        }
+        if (i >= 4 && i <= 6) ctx.fillStyle = "#87CEFA"; // water
+        else if (i >= 1 && i <=3) ctx.fillStyle = "#ccc"; // road
+        else ctx.fillStyle = "#90EE90"; // grass
         ctx.fillRect(0, i * laneHeight, canvas.width, laneHeight);
       }
 
@@ -124,7 +166,7 @@
         ctx.fillRect(log.x, log.y, log.width, log.height);
       });
 
-      // Draw score
+      // Score
       document.getElementById("score").innerText = "Score: " + score;
     }
 
@@ -154,7 +196,7 @@
         }
       }
 
-      // Water: if in water lanes (4-6) without a log
+      // Water lanes
       if (player.y >= 4 * laneHeight && player.y <= 6 * laneHeight) {
         let onLog = false;
         for (let log of logs) {
@@ -165,7 +207,7 @@
             player.y < log.y + log.height
           ) {
             onLog = true;
-            player.x -= log.speed; // player moves with log
+            player.x -= log.speed; // move with log
           }
         }
         if (!onLog) {
@@ -174,7 +216,7 @@
         }
       }
 
-      // Win
+      // Win / forward
       if (player.y < laneHeight) {
         score += 10;
         moveScreen();
@@ -187,19 +229,28 @@
       logs.forEach(log => log.y += laneHeight / 2);
     }
 
-    document.addEventListener("keydown", (e) => {
-      if (gameOver) return;
+    function mobileMove(direction) {
       const moveAmount = laneHeight;
-      if (e.key === "ArrowUp") player.y -= moveAmount;
-      if (e.key === "ArrowDown") player.y += moveAmount;
-      if (e.key === "ArrowLeft") player.x -= moveAmount;
-      if (e.key === "ArrowRight") player.x += moveAmount;
+      if (gameOver) return;
 
-      // Stay inside canvas
+      if (direction === "up") player.y -= moveAmount;
+      if (direction === "down") player.y += moveAmount;
+      if (direction === "left") player.x -= moveAmount;
+      if (direction === "right") player.x += moveAmount;
+
+      // Keep player inside canvas
       if (player.x < 0) player.x = 0;
       if (player.x + player.width > canvas.width) player.x = canvas.width - player.width;
       if (player.y < 0) player.y = 0;
       if (player.y + player.height > canvas.height) player.y = canvas.height - player.height;
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (gameOver) return;
+      if (e.key === "ArrowUp") mobileMove("up");
+      if (e.key === "ArrowDown") mobileMove("down");
+      if (e.key === "ArrowLeft") mobileMove("left");
+      if (e.key === "ArrowRight") mobileMove("right");
     });
 
     function showRestartButton() {
