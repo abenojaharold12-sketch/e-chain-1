@@ -4,11 +4,11 @@ async function sendMessage() {
   const message = input.value.trim();
   if (!message) return;
 
-  // User message
+  // Add user message
   chatLog.innerHTML += `<div class="user">🧑 ${message}</div>`;
   input.value = "";
 
-  // Thinking message
+  // Add Thinking message
   const thinking = document.createElement("div");
   thinking.className = "bot";
   thinking.textContent = "🤖 Thinking...";
@@ -29,13 +29,8 @@ async function sendMessage() {
     chatLog.scrollTop = chatLog.scrollHeight;
 
   } catch (err) {
-    console.error(err);
     thinking.remove();
     chatLog.innerHTML += `<div class="bot">🤖 Error connecting to AI.</div>`;
+    console.error(err);
   }
 }
-
-// Press Enter to send
-document.getElementById("user-input").addEventListener("keydown", e => {
-  if (e.key === "Enter") sendMessage();
-});
