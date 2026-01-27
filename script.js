@@ -15,7 +15,7 @@ async function sendMessage() {
   chatLog.appendChild(thinking);
   chatLog.scrollTop = chatLog.scrollHeight;
 
-  // OFFLINE AI fallback with fixed questions
+  // Offline AI with fixed questions
   function offlineAI(msg) {
     const q = msg.toLowerCase();
 
@@ -27,20 +27,16 @@ async function sendMessage() {
       "how do i scan the qr?": "Just use any QR scanner on your phone to access the content."
     };
 
-    // Return fixed answer if exact match
     if (fixedAnswers[q]) return fixedAnswers[q];
-
-    // Keyword-based fallback
     if (q.includes("e-chain")) return "E-Chain is a smart keychain with a QR code.";
     if (q.includes("game")) return "Scan the QR code to access fun games!";
     if (q.includes("price") || q.includes("cost")) return "E-Chain is student-friendly and affordable.";
 
-    // Default fallback
     return "I'm currently offline, but I'm still here to help!";
   }
 
   try {
-    // Try ONLINE AI
+    // Try online AI
     const res = await fetch("/api/ask", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -54,11 +50,19 @@ async function sendMessage() {
     chatLog.innerHTML += `<div class="bot">🤖 ${data.answer}</div>`;
     chatLog.scrollTop = chatLog.scrollHeight;
 
+    // Clear offline badge if online AI works
+    const badge = document.getElementById("ai-mode-badge");
+    if (badge) badge.textContent = "";
+
   } catch (error) {
     // Use offline AI if online fails
     thinking.remove();
     const answer = offlineAI(message);
     chatLog.innerHTML += `<div class="bot">🤖 ${answer}</div>`;
     chatLog.scrollTop = chatLog.scrollHeight;
+
+    // Show Offline Mode badge
+    const badge = document.getElementById("ai-mode-badge");
+    if (badge) badge.textContent = "Offline Mode";
   }
 }
