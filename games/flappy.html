@@ -61,26 +61,32 @@
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
+// Bird settings
 const bird = { x:50, y:250, width:20, height:20, dy:0 };
-const gravity = 0.6;
-const flapStrength = -10;
+const gravity = 0.7;       // slightly stronger gravity
+const flapStrength = -6;   // smaller, more controlled jump
 let score = 0;
 
+// Pipes settings
 const pipes = [];
 const pipeWidth = 40;
 const pipeGap = 120;
 let frame = 0;
 
+// Flap function
 function flap() { bird.dy = flapStrength; }
 
+// Controls
 document.addEventListener("keydown", e => { if(e.code==="Space") flap(); });
 document.addEventListener("touchstart", e => { flap(); });
 
+// Draw bird
 function drawBird() {
   ctx.fillStyle = "yellow";
   ctx.fillRect(bird.x, bird.y, bird.width, bird.height);
 }
 
+// Draw pipes
 function drawPipes() {
   ctx.fillStyle = "green";
   pipes.forEach(p => {
@@ -89,6 +95,7 @@ function drawPipes() {
   });
 }
 
+// Collision detection
 function checkCollision() {
   if(bird.y < 0 || bird.y + bird.height > canvas.height) return true;
   for(let p of pipes){
@@ -101,6 +108,7 @@ function checkCollision() {
   return false;
 }
 
+// Game update loop
 function update() {
   ctx.clearRect(0,0,canvas.width,canvas.height);
 
@@ -108,13 +116,17 @@ function update() {
   bird.dy += gravity;
   bird.y += bird.dy;
 
-  // Pipes
+  // Create pipes
   if(frame % 90 === 0){
     const topHeight = Math.random() * (canvas.height - pipeGap - 60) + 30;
     const bottomHeight = canvas.height - pipeGap - topHeight;
     pipes.push({x:canvas.width, top:topHeight, bottom:bottomHeight});
   }
+
+  // Move pipes
   pipes.forEach(p => p.x -= 2);
+
+  // Remove offscreen pipes & update score
   if(pipes.length && pipes[0].x + pipeWidth < 0) {
     pipes.shift();
     score++;
@@ -123,8 +135,10 @@ function update() {
   drawPipes();
   drawBird();
 
+  // Update score display
   document.getElementById("score").textContent = "Score: " + score;
 
+  // Check collision
   if(checkCollision()){
     alert("Game Over! Score: " + score);
     resetGame();
@@ -135,6 +149,7 @@ function update() {
   requestAnimationFrame(update);
 }
 
+// Reset game
 function resetGame(){
   bird.y = 250;
   bird.dy = 0;
