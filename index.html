@@ -5,6 +5,46 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>E-Chain | Smart QR Keychain</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* Inline minimal styles for neat AI buttons */
+    .chat-questions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .chat-questions button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      font-size: 0.9rem;
+    }
+    .chat-questions button:hover {
+      background-color: #45a049;
+    }
+    .chat-log {
+      max-height: 250px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 8px;
+      background: #f9f9f9;
+      margin-bottom: 10px;
+    }
+    .user {
+      text-align: right;
+      margin: 4px 0;
+      font-weight: bold;
+    }
+    .bot {
+      text-align: left;
+      margin: 4px 0;
+    }
+  </style>
 </head>
 <body>
 
@@ -88,7 +128,7 @@
         <button onclick="answerQuestion('Who made you?')">Who made you?</button>
         <button onclick="answerQuestion('What games are there?')">What games are there?</button>
         <button onclick="answerQuestion('How do I scan the QR?')">How do I scan the QR?</button>
-        <button onclick="answerQuestion('"does this update?')">does this update?</button>
+        <button onclick="answerQuestion('Does this still update?')">Does this still update?</button>
       </div>
     </div>
   </section>
