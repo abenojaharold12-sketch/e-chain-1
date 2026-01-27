@@ -74,15 +74,20 @@
   <!-- OFFLINE AI CHATBOT -->
   <section id="ai" class="section">
     <h2>E-Chain AI 🤖</h2>
-    <p>Ask one of the predefined questions below or type your own!</p>
+    <p>Click a question below to get an answer!</p>
 
     <div class="chatbox">
       <div id="chat-log" class="chat-log">
-        <div class="bot">🤖 Hi! Try asking: "What is E-Chain?", "How much does E-Chain cost?", or "What games are there?"</div>
+        <div class="bot">🤖 Hi! Click a question below to get started.</div>
       </div>
-      <div class="chat-input">
-        <input type="text" id="user-input" placeholder="Type your question..." />
-        <button onclick="sendMessage()">Send</button>
+
+      <!-- Fixed questions as clickable buttons -->
+      <div class="chat-questions">
+        <button onclick="answerQuestion('What is E-Chain?')">What is E-Chain?</button>
+        <button onclick="answerQuestion('How much does E-Chain cost?')">How much does E-Chain cost?</button>
+        <button onclick="answerQuestion('Who made you?')">Who made you?</button>
+        <button onclick="answerQuestion('What games are there?')">What games are there?</button>
+        <button onclick="answerQuestion('How do I scan the QR?')">How do I scan the QR?</button>
       </div>
     </div>
   </section>
