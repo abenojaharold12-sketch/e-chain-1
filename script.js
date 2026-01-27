@@ -1,36 +1,40 @@
-async function sendMessage() {
-  const input = document.getElementById("user-input");
-  const chatLog = document.getElementById("chat-log");
-  const message = input.value.trim();
-  if (!message) return;
+async function askAI() {
+  const question = document.getElementById("question").value;
+  const answerBox = document.getElementById("answer");
 
-  // Add user message
-  chatLog.innerHTML += `<div class="user">🧑 ${message}</div>`;
-  input.value = "";
+  answerBox.innerText = "Thinking...";
 
-  // Add Thinking message
-  const thinking = document.createElement("div");
-  thinking.className = "bot";
-  thinking.textContent = "🤖 Thinking...";
-  chatLog.appendChild(thinking);
-  chatLog.scrollTop = chatLog.scrollHeight;
+  // OFFLINE fallback AI
+  function offlineAI(q) {
+    q = q.toLowerCase();
+
+    if (q.includes("e-chain"))
+      return "E-Chain is a smart keychain with a QR code for students.";
+
+    if (q.includes("price"))
+      return "E-Chain is affordable and student-friendly.";
+
+    if (q.includes("game"))
+      return "Scan the QR code to access fun games and content.";
+
+    return "I'm currently offline, but I'm still here to help!";
+  }
 
   try {
+    // Try ONLINE AI
     const res = await fetch("/api/ask", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ question: message })
+      body: JSON.stringify({ question })
     });
 
+    if (!res.ok) throw new Error("API failed");
+
     const data = await res.json();
-    thinking.remove();
+    answerBox.innerText = data.answer;
 
-    chatLog.innerHTML += `<div class="bot">🤖 ${data.answer}</div>`;
-    chatLog.scrollTop = chatLog.scrollHeight;
-
-  } catch (err) {
-    thinking.remove();
-    chatLog.innerHTML += `<div class="bot">🤖 Error connecting to AI.</div>`;
-    console.error(err);
+  } catch (error) {
+    console.warn("Using offline AI:", error);
+    answerBox.innerText = offlineAI(question);
   }
 }
