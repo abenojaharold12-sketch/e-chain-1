@@ -6,12 +6,12 @@ function answerQuestion(message) {
 
   // Fixed offline answers
   const fixedAnswers = {
-    "what is e-chain?": "E-Chain is a smart keychain with a QR code that links to games and an AI assistant.",
+    "what is e-chain?": "E-Chain is a smart keychain with a QR code that links to games and an offline AI assistant.",
     "how much does e-chain cost?": "E-Chain is affordable and student-friendly.",
     "who made you?": "I was created by the E-Chain team for students.",
     "what games are there?": "You can play Flappy, Frogger, Tic-Tac-Toe, and Tetris! and Many more to come",
     "how do i scan the qr?": "Use any QR scanner on your phone to access the content.",
-    "Does this update ?": "Yes this is a website still in work and updating.",
+    "does this update ?": "Yes this is a website still in work and updating.",
   };
 
   const lowerMsg = message.toLowerCase();
