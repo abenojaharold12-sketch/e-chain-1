@@ -78,7 +78,6 @@
     transform: scale(0.95);
   }
 
-  /* D-pad positions */
   .dpad .left { grid-column: 1; grid-row: 2; }
   .dpad .down { grid-column: 2; grid-row: 2; }
   .dpad .right { grid-column: 3; grid-row: 2; }
@@ -103,7 +102,10 @@
 
   .next-piece {
     margin-left: 20px;
+    text-align: center;
   }
+
+  .next-piece h3 { margin-bottom: 5px; }
 
   @media (max-width:480px){
     .dpad button, .rotate-btn { width: 60px; height: 60px; font-size: 26px; }
@@ -135,7 +137,6 @@
     <button class="down" onclick="playerDrop()">⬇️</button>
     <button class="right" onclick="playerMove(1)">➡️</button>
   </div>
-
   <button class="rotate-btn" onclick="playerRotate()">🔃</button>
 </div>
 
@@ -167,11 +168,15 @@ function createPiece(type){
 }
 
 function drawMatrix(matrix,offset,context=ctx){
+  const w = matrix[0].length;
+  const h = matrix.length;
+  const xOffset = (context===nextCtx) ? Math.floor((nextCanvas.width/20 - w)/2) : offset.x;
+  const yOffset = (context===nextCtx) ? Math.floor((nextCanvas.height/20 - h)/2) : offset.y;
   matrix.forEach((row,y)=>{
     row.forEach((value,x)=>{
       if(value!==0){
         context.fillStyle=colors[value];
-        context.fillRect(x+offset.x,y+offset.y,1,1);
+        context.fillRect(x + xOffset, y + yOffset, 1, 1);
       }
     });
   });
