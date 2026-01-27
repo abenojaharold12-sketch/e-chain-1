@@ -6,10 +6,10 @@
 <title>Mobile Tetris with Next Piece</title>
 <style>
   html, body {height:100%; margin:0; font-family: Arial; user-select:none; -webkit-user-select:none;}
-  body {background:black; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:10px;}
+  body {background:black; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding:10px;}
   canvas {border:1px solid white; touch-action:none;}
-  #next-piece {margin-bottom:10px;}
-  #score {color:white; font-size:20px; margin-bottom:10px; text-align:center;}
+  #score {color:white; font-size:18px; position:absolute; top:10px; left:10px;}
+  #next-piece {position:absolute; top:10px; right:10px; border:1px solid white; background:black;}
   .controls {margin-top:10px; display:flex; justify-content:center; gap:15px;}
   .controls button {width:60px; height:60px; font-size:24px; border:none; border-radius:8px; background:#00e6ff; color:#111; font-weight:bold; touch-action:none;}
   .controls button:active {background:#00b0cc; transform:scale(0.95);}
@@ -19,7 +19,7 @@
 <body>
 
 <div id="score">Score: 0</div>
-<canvas id="next-piece" width="128" height="128"></canvas>
+<canvas id="next-piece" width="96" height="96"></canvas>
 <canvas width="320" height="640" id="game"></canvas>
 
 <div class="controls">
@@ -59,7 +59,6 @@ const colors={'I':'cyan','O':'yellow','T':'purple','S':'green','Z':'red','J':'bl
 
 let count=0, tetromino=getNextTetromino(), nextTetromino=getNextTetromino(), rAF=null, gameOver=false;
 
-// draw main playfield
 function draw(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   for(let r=0;r<20;r++){for(let c=0;c<10;c++){if(playfield[r][c]){ctx.fillStyle=colors[playfield[r][c]];ctx.fillRect(c*grid,r*grid,grid-1,grid-1);}}}
@@ -75,14 +74,12 @@ function drawNextPiece(){
   for(let r=0;r<m.length;r++){for(let c=0;c<m[r].length;c++){if(m[r][c]){nextCtx.fillStyle=colors[nextTetromino.name]; nextCtx.fillRect(offsetX + c*grid, offsetY + r*grid, grid-1, grid-1);}}}
 }
 
-// game loop
 function loop(){rAF=requestAnimationFrame(loop);if(gameOver) return; count++; if(count>35){tetromino.row++; if(!isValidMove(tetromino.matrix,tetromino.row,tetromino.col)){tetromino.row--; placeTetromino();} count=0;} draw();}
 rAF=requestAnimationFrame(loop);
 
 function move(dir){const col=tetromino.col+dir;if(isValidMove(tetromino.matrix,tetromino.row,col)) tetromino.col=col;}
 function drop(){const row=tetromino.row+1;if(!isValidMove(tetromino.matrix,row,tetromino.col)){tetromino.row=row-1; placeTetromino(); return;} tetromino.row=row;}
 function rotateTet(){const matrix=rotate(tetromino.matrix); if(isValidMove(matrix,tetromino.row,tetromino.col)) tetromino.matrix=matrix;}
-
 function updateScore(){document.getElementById('score').textContent='Score: '+score;}
 
 // keyboard support
