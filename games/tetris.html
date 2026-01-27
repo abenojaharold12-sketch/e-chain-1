@@ -3,19 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🟦 E-Chain Tetris</title>
+<title>🟦 Modern Tetris</title>
 <style>
-  body {margin:0;font-family:Arial;background:#111;color:white;display:flex;flex-direction:column;align-items:center;padding:10px;}
-  h1 {margin:10px 0;text-align:center;font-size:28px;color:#00e6ff;text-shadow:1px 1px 4px black;}
-  canvas {border:3px solid #00e6ff;border-radius:10px;}
-  .scoreboard {margin-top:10px;font-size:18px;display:flex;justify-content:space-between;width:240px;}
-  .game-container {display:flex;gap:20px;}
-  .next-piece{text-align:center;}
-  .controls-container {margin-top:15px;display:flex;justify-content:space-between;width:240px;align-items:center;}
-  .dpad {display:flex;gap:10px;}
-  .dpad button, .rotate-btn {width:60px;height:60px;font-size:24px;border-radius:8px;border:none;background:#00e6ff;color:#111;font-weight:bold;cursor:pointer;touch-action:manipulation;transition:transform 0.1s,background 0.2s;}
-  .dpad button:active, .rotate-btn:active {background:#00b0cc;transform:scale(0.95);}
-  @media(max-width:480px){.dpad button,.rotate-btn{width:70px;height:70px;font-size:28px;}h1{font-size:24px;}}
+body {margin:0;font-family:Arial;background:#111;color:white;display:flex;flex-direction:column;align-items:center;padding:10px;}
+h1 {margin:10px 0;text-align:center;font-size:28px;color:#00e6ff;text-shadow:1px 1px 4px black;}
+canvas {border:3px solid #00e6ff;border-radius:10px;}
+.scoreboard {margin-top:10px;font-size:18px;display:flex;justify-content:space-between;width:240px;}
+.game-container {display:flex;gap:20px;}
+.next-piece{text-align:center;}
+.controls-container {margin-top:15px;display:flex;justify-content:space-between;width:280px;align-items:center;}
+.dpad {display:flex;gap:15px;}
+.dpad button, .rotate-btn {width:60px;height:60px;font-size:24px;border-radius:8px;border:none;background:#00e6ff;color:#111;font-weight:bold;cursor:pointer;touch-action:manipulation;transition:transform 0.1s,background 0.2s;}
+.dpad button:active, .rotate-btn:active {background:#00b0cc;transform:scale(0.95);}
+.rotate-btn {margin-left:20px;}
+@media(max-width:480px){.dpad button,.rotate-btn{width:70px;height:70px;font-size:28px;}h1{font-size:24px;}}
 </style>
 </head>
 <body>
@@ -78,38 +79,30 @@ function collide(arena,player){
 
 function merge(arena,player){player.matrix.forEach((row,y)=>row.forEach((val,x)=>{if(val!==0) arena[y+player.pos.y][x+player.pos.x]=val;}));}
 
-function rotate(matrix,dir=1){
+function rotate(matrix, dir=1){
   const N=matrix.length;
-  const rotated=matrix.map((row,y)=>row.map((val,x)=>matrix[N-1-x][y]));
+  const rotated = matrix.map((row,y)=>row.map((val,x)=>matrix[N-1-x][y]));
   return rotated;
 }
 
 function playerRotate(){
-  const pos=player.pos.x;
-  let offset=1;
-  player.matrix=rotate(player.matrix);
+  const original = player.matrix;
+  const pos = player.pos.x;
+  player.matrix = rotate(player.matrix);
+  let offset = 1;
   while(collide(arena,player)){
     player.pos.x += offset;
     offset = -(offset + (offset>0?1:-1));
-    if(Math.abs(offset) > player.matrix[0].length){player.matrix=rotate(player.matrix,-1);player.pos.x=pos;return;}
+    if(Math.abs(offset) > player.matrix[0].length){player.matrix = original; player.pos.x = pos; return;}
   }
 }
 
-function playerMove(dir){player.pos.x+=dir;if(collide(arena,player)) player.pos.x-=dir;}
+function playerMove(dir){player.pos.x += dir;if(collide(arena,player)) player.pos.x -= dir;}
 function playerDrop(){player.pos.y++;if(collide(arena,player)){player.pos.y--;merge(arena,player);resetPlayer();arenaSweep();}dropCounter=0;}
 
-function arenaSweep(){
-  let rowCount=1;outer:for(let y=arena.length-1;y>=0;y--){for(let x=0;x<arena[y].length;x++){if(arena[y][x]===0)continue outer;}arena.splice(y,1);arena.unshift(new Array(arena[0].length).fill(0));player.score+=rowCount*10;rowCount*=2;}
-  updateScore();
-}
+function arenaSweep(){let rowCount=1;outer:for(let y=arena.length-1;y>=0;y--){for(let x=0;x<arena[y].length;x++){if(arena[y][x]===0)continue outer;}arena.splice(y,1);arena.unshift(new Array(arena[0].length).fill(0));player.score+=rowCount*10;rowCount*=2;}updateScore();}
 
-function resetPlayer(){
-  player.matrix=nextPiece;
-  player.pos.y=0;
-  player.pos.x=(arena[0].length/2|0)-(player.matrix[0].length/2|0);
-  nextPiece=createPiece('TJLOSZI'[Math.floor(Math.random()*7)]);
-  if(collide(arena,player)){arena.forEach(r=>r.fill(0));player.score=0;updateScore();}
-}
+function resetPlayer(){player.matrix=nextPiece;player.pos.y=0;player.pos.x=(arena[0].length/2|0)-(player.matrix[0].length/2|0);nextPiece=createPiece('TJLOSZI'[Math.floor(Math.random()*7)]);if(collide(arena,player)){arena.forEach(r=>r.fill(0));player.score=0;updateScore();}}
 
 function drawNext(){nextCtx.fillStyle="#111";nextCtx.fillRect(0,0,nextCanvas.width,nextCanvas.height);drawMatrix(nextPiece,{x:0,y:0},nextCtx);}
 function updateScore(){document.getElementById("score").textContent=player.score;if(player.score>highScore) highScore=player.score;document.getElementById("highScore").textContent=highScore;}
@@ -128,25 +121,23 @@ document.addEventListener("keydown",e=>{
   else if(e.key==="ArrowUp") playerRotate();
 });
 
-// Mobile button controls
-document.getElementById("left").addEventListener("touchstart", e=>{ e.preventDefault(); playerMove(-1); draw(); });
-document.getElementById("right").addEventListener("touchstart", e=>{ e.preventDefault(); playerMove(1); draw(); });
-document.getElementById("down").addEventListener("touchstart", e=>{ e.preventDefault(); playerDrop(); draw(); });
-document.getElementById("rotateBtn").addEventListener("touchstart", e=>{ e.preventDefault(); playerRotate(); draw(); });
-document.getElementById("rotateBtn").addEventListener("click", ()=>{ playerRotate(); draw(); });
+// Mobile buttons
+document.getElementById("left").addEventListener("touchstart",e=>{e.preventDefault(); playerMove(-1); draw();});
+document.getElementById("right").addEventListener("touchstart",e=>{e.preventDefault(); playerMove(1); draw();});
+document.getElementById("down").addEventListener("touchstart",e=>{e.preventDefault(); playerDrop(); draw();});
+document.getElementById("rotateBtn").addEventListener("touchstart",e=>{e.preventDefault(); playerRotate(); draw();});
+document.getElementById("rotateBtn").addEventListener("click",()=>{playerRotate(); draw();});
 
-// Swipe support
+// Swipe gestures
 let touchStartX=0,touchStartY=0;
 document.addEventListener("touchstart",e=>{touchStartX=e.changedTouches[0].screenX;touchStartY=e.changedTouches[0].screenY;});
 document.addEventListener("touchend",e=>{
   const dx=e.changedTouches[0].screenX-touchStartX;
   const dy=e.changedTouches[0].screenY-touchStartY;
   if(Math.abs(dx)>Math.abs(dy)){
-    if(dx>30) playerMove(1);
-    else if(dx<-30) playerMove(-1);
+    if(dx>30) playerMove(1); else if(dx<-30) playerMove(-1);
   } else {
-    if(dy>30) playerDrop();
-    else if(dy<-30) playerRotate();
+    if(dy>30) playerDrop(); else if(dy<-30) playerRotate();
   }
   draw();
 });
