@@ -11,7 +11,7 @@ function answerQuestion(message) {
     "who made you?": "I was created by the E-Chain team for students.",
     "what games are there?": "You can play Flappy, Frogger, Tic-Tac-Toe, and Tetris! and Many more to come",
     "how do i scan the qr?": "Use any QR scanner on your phone to access the content.",
-    "does this update ?": "Yes this is a website still in work and updating.",
+    "does this update?": "Yes this is a website still in work and updating.",
   };
 
   const lowerMsg = message.toLowerCase();
