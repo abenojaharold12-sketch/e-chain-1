@@ -1,22 +1,41 @@
-async function askAI() {
-  const question = document.getElementById("question").value;
-  const answerBox = document.getElementById("answer");
+async function sendMessage() {
+  const input = document.getElementById("user-input");
+  const chatLog = document.getElementById("chat-log");
+  const message = input.value.trim();
+  if (!message) return;
 
-  answerBox.innerText = "Thinking...";
+  // Show user message
+  chatLog.innerHTML += `<div class="user">🧑 ${message}</div>`;
+  input.value = "";
 
-  // OFFLINE fallback AI
-  function offlineAI(q) {
-    q = q.toLowerCase();
+  // Thinking message
+  const thinking = document.createElement("div");
+  thinking.className = "bot";
+  thinking.textContent = "🤖 Thinking...";
+  chatLog.appendChild(thinking);
+  chatLog.scrollTop = chatLog.scrollHeight;
 
-    if (q.includes("e-chain"))
-      return "E-Chain is a smart keychain with a QR code for students.";
+  // OFFLINE AI fallback with fixed questions
+  function offlineAI(msg) {
+    const q = msg.toLowerCase();
 
-    if (q.includes("price"))
-      return "E-Chain is affordable and student-friendly.";
+    const fixedAnswers = {
+      "what is e-chain?": "E-Chain is a smart keychain with a QR code for students.",
+      "how much does e-chain cost?": "E-Chain is affordable and student-friendly.",
+      "who made you?": "I was created by the E-Chain team for students.",
+      "what games are there?": "You can play Flappy, Frogger, Tic-Tac-Toe, and Tetris!",
+      "how do i scan the qr?": "Just use any QR scanner on your phone to access the content."
+    };
 
-    if (q.includes("game"))
-      return "Scan the QR code to access fun games and content.";
+    // Return fixed answer if exact match
+    if (fixedAnswers[q]) return fixedAnswers[q];
 
+    // Keyword-based fallback
+    if (q.includes("e-chain")) return "E-Chain is a smart keychain with a QR code.";
+    if (q.includes("game")) return "Scan the QR code to access fun games!";
+    if (q.includes("price") || q.includes("cost")) return "E-Chain is student-friendly and affordable.";
+
+    // Default fallback
     return "I'm currently offline, but I'm still here to help!";
   }
 
@@ -25,16 +44,21 @@ async function askAI() {
     const res = await fetch("/api/ask", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ question })
+      body: JSON.stringify({ question: message })
     });
 
     if (!res.ok) throw new Error("API failed");
 
     const data = await res.json();
-    answerBox.innerText = data.answer;
+    thinking.remove();
+    chatLog.innerHTML += `<div class="bot">🤖 ${data.answer}</div>`;
+    chatLog.scrollTop = chatLog.scrollHeight;
 
   } catch (error) {
-    console.warn("Using offline AI:", error);
-    answerBox.innerText = offlineAI(question);
+    // Use offline AI if online fails
+    thinking.remove();
+    const answer = offlineAI(message);
+    chatLog.innerHTML += `<div class="bot">🤖 ${answer}</div>`;
+    chatLog.scrollTop = chatLog.scrollHeight;
   }
 }
