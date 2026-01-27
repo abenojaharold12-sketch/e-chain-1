@@ -1,22 +1,97 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Tic Tac Toe</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>❌⭕ Tic Tac Toe</title>
   <style>
-    body { font-family: Arial; text-align: center; padding: 20px; }
-    .board {
-      display: grid;
-      grid-template-columns: repeat(3, 80px);
-      gap: 5px;
-      justify-content: center;
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+      background: linear-gradient(to bottom, #f0f8ff, #e0f7fa);
+    }
+
+    h2 {
+      color: #00796b;
+      margin-bottom: 10px;
+      text-shadow: 1px 1px 2px #ccc;
+    }
+
+    .options {
       margin-bottom: 15px;
     }
-    .board button { font-size: 24px; height: 80px; width: 80px; }
+
+    .options button {
+      background: #00796b;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 14px;
+      margin: 0 5px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.2s;
+    }
+    .options button:hover { background: #004d40; }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-template-rows: repeat(3, 100px);
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 15px;
+      background: #004d40;
+      padding: 8px;
+      border-radius: 12px;
+    }
+
+    .board button {
+      font-size: 36px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      background: #e0f7fa;
+      color: #00796b;
+    }
+
+    .board button:hover {
+      background: #b2dfdb;
+      transform: scale(1.05);
+    }
+
+    .board button.x { color: #d32f2f; }
+    .board button.o { color: #1976d2; }
+
+    #status {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #004d40;
+    }
+
+    #resetBtn {
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #00796b;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    #resetBtn:hover { background: #004d40; }
 
     @media (max-width: 480px) {
-      .board { grid-template-columns: repeat(3, 60px); gap: 4px; }
-      .board button { height: 60px; width: 60px; font-size: 18px; }
+      .board {
+        grid-template-columns: repeat(3, 70px);
+        grid-template-rows: repeat(3, 70px);
+        gap: 5px;
+      }
+      .board button { font-size: 28px; }
     }
   </style>
 </head>
@@ -24,20 +99,34 @@
 
 <h2>❌⭕ Tic Tac Toe</h2>
 
+<div class="options">
+  <button onclick="setMode('pvp')">Two Players</button>
+  <button onclick="setMode('ai')">Play vs AI</button>
+</div>
+
 <div class="board" id="board"></div>
 <p id="status"></p>
-<button onclick="resetBoard()">Reset</button>
+<button id="resetBtn" onclick="resetBoard()">Reset</button>
 
 <script>
 let board = Array(9).fill("");
 let currentPlayer = "X";
+let gameMode = "pvp"; // default mode
+const boardDiv = document.getElementById("board");
+const status = document.getElementById("status");
+
+function setMode(mode){
+  gameMode = mode;
+  resetBoard();
+}
 
 function drawBoard() {
-  const boardDiv = document.getElementById("board");
   boardDiv.innerHTML = "";
   board.forEach((cell,i)=>{
     const btn=document.createElement("button");
     btn.textContent=cell;
+    if(cell === "X") btn.classList.add("x");
+    else if(cell === "O") btn.classList.add("o");
     btn.onclick=()=>makeMove(i);
     boardDiv.appendChild(btn);
   });
@@ -46,9 +135,17 @@ function drawBoard() {
 
 function makeMove(i){
   if(board[i]!=="") return;
-  board[i]=currentPlayer;
-  currentPlayer=currentPlayer==="X"?"O":"X";
+  if(checkWinner()) return;
+
+  board[i] = currentPlayer;
   drawBoard();
+
+  if(gameMode==="ai" && !checkWinner()){
+    currentPlayer = currentPlayer === "X" ? "O" : "X";
+    aiMove();
+  } else {
+    currentPlayer = currentPlayer === "X" ? "O" : "X";
+  }
 }
 
 function checkWinner(){
@@ -57,22 +154,40 @@ function checkWinner(){
     [0,3,6],[1,4,7],[2,5,8],
     [0,4,8],[2,4,6]
   ];
-  let winner=null;
+  let winner = null;
   winPatterns.forEach(p=>{
     if(board[p[0]] && board[p[0]]===board[p[1]] && board[p[1]]===board[p[2]]){
-      winner=board[p[0]];
+      winner = board[p[0]];
+      p.forEach(i => boardDiv.children[i].style.background = "#ffd54f"); // highlight winning line
     }
   });
-  const status=document.getElementById("status");
-  if(winner) status.textContent=`🎉 Player ${winner} wins!`;
-  else if(!board.includes("")) status.textContent="⚖️ It's a draw!";
-  else status.textContent=`Current Player: ${currentPlayer}`;
+
+  if(winner){
+    status.textContent=`🎉 Player ${winner} wins!`;
+    return true;
+  } else if(!board.includes("")){
+    status.textContent="⚖️ It's a draw!";
+    return true;
+  } else {
+    status.textContent=`Current Player: ${currentPlayer}`;
+    return false;
+  }
 }
 
 function resetBoard(){
   board=Array(9).fill("");
   currentPlayer="X";
   drawBoard();
+}
+
+// Simple AI: random empty cell
+function aiMove(){
+  const empty = board.map((v,i)=>v==="").filter(i=>i!==false);
+  const idx = board.reduce((acc,v,i)=>v===""?acc.concat(i):acc, []);
+  if(idx.length>0){
+    const randomIndex = idx[Math.floor(Math.random()*idx.length)];
+    setTimeout(()=>{ board[randomIndex] = "O"; currentPlayer="X"; drawBoard(); }, 300);
+  }
 }
 
 drawBoard();
