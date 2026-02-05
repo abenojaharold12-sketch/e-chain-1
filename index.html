@@ -72,7 +72,6 @@
       border-radius: 10px;
       width: 140px;
     }
-    /* AI Chatbot styles */
     .chatbox {
       max-width: 400px;
       margin: 0 auto;
@@ -116,7 +115,6 @@
     .chat-questions button:hover {
       background-color: #45a049;
     }
-    /* Timer */
     #update-timer {
       font-weight: bold;
       color: #ff6f61;
@@ -134,7 +132,6 @@
 </head>
 <body>
 
-  <!-- NAVBAR -->
   <header class="navbar">
     <h1 class="logo">E-Chain</h1>
     <nav>
@@ -146,14 +143,12 @@
     </nav>
   </header>
 
-  <!-- HERO -->
   <section class="hero">
     <h2>Scan. Play. Ask.</h2>
     <p>A smart keychain with a QR that connects you to games and an AI assistant.</p>
     <a href="#ai" class="btn">Try the AI</a>
   </section>
 
-  <!-- ABOUT -->
   <section id="about" class="section">
     <h2>What is E-Chain?</h2>
     <p>
@@ -162,7 +157,6 @@
     </p>
   </section>
 
-  <!-- FEATURES -->
   <section id="features" class="section light">
     <h2>Features</h2>
     <div class="features">
@@ -173,7 +167,6 @@
     </div>
   </section>
 
-  <!-- MINI GAMES -->
   <section id="games" class="section light">
     <h2>Mini Games 🎮</h2>
     <p>Click any game below to play directly in your browser!</p>
@@ -193,17 +186,18 @@
       <div class="game-card">
         <h3>Tetris</h3>
         <a href="games/tetris.html" target="_blank" class="btn">Play</a>
-        <div class="game-card">
-  <h3>Snake 🐍</h3>
-  <a href="https://abenojaharold12-sketch.github.io/Snake-Game/" target="_blank" class="btn">
-    Play
-  </a>
-</div>
+      </div>
+
+      <!-- Snake added at the bottom -->
+      <div class="game-card">
+        <h3>Snake 🐍</h3>
+        <a href="https://abenojaharold12-sketch.github.io/Snake-Game/" target="_blank" class="btn">
+          Play
+        </a>
       </div>
     </div>
   </section>
 
-  <!-- OFFLINE AI CHATBOT -->
   <section id="ai" class="section">
     <h2>E-Chain AI 🤖</h2>
     <p>Click a question below to get an answer!</p>
@@ -213,7 +207,6 @@
         <div class="bot">🤖 Hi! Click a question below to get started.</div>
       </div>
 
-      <!-- Fixed questions as clickable buttons -->
       <div class="chat-questions">
         <button onclick="answerQuestion('What is E-Chain?')">What is E-Chain?</button>
         <button onclick="answerQuestion('How much does E-Chain cost?')">How much does E-Chain cost?</button>
@@ -223,26 +216,21 @@
         <button onclick="answerQuestion('Does this still update?')">Does this still update?</button>
       </div>
 
-      <!-- Countdown Timer -->
       <p>Next Update In: <span id="update-timer">Loading...</span></p>
     </div>
   </section>
 
-  <!-- CONTACT -->
   <section id="contact" class="section light">
     <h2>Contact</h2>
     <p>Available at Calinan National High School</p>
     <p>Facebook: E-Chain</p>
   </section>
 
-  <!-- FOOTER -->
   <footer class="footer">
     <p>© 2026 THANK YOU FOR SUPPORTING E-Chain | A Student Project</p>
   </footer>
 
-  <!-- SCRIPT -->
   <script>
-    // Offline AI responses
     function answerQuestion(q) {
       const chatLog = document.getElementById("chat-log");
       let answer = "Sorry, I don't understand that question.";
@@ -259,8 +247,7 @@
       chatLog.scrollTop = chatLog.scrollHeight;
     }
 
-    // Countdown Timer
-    const nextUpdate = new Date("2026-02-14T12:00:00"); // next update date & time
+    const nextUpdate = new Date("2026-02-14T12:00:00");
     function updateCountdown() {
       const now = new Date();
       const diff = nextUpdate - now;
